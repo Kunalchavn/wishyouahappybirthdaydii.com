@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Birthday Surprise</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Calligraphy Font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+font-family:'Poppins',sans-serif;
+background:#000;
+position:relative;
+}
+
+/* Make canvas cover full screen */
+#particles{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
+}
+
+/* Keep your card above particles */
+.card{
+position:relative;
+z-index:2;
+}
+
+#openBtn{
+position:relative;
+z-index:2;
+}
+
+
+
+/* Button */
+#openBtn{
+padding:15px 35px;
+font-size:20px;
+border:none;
+border-radius:50px;
+cursor:pointer;
+background:white;
+color:#ffb53d;
+font-weight:bold;
+transition:0.4s ease;
+}
+
+#openBtn:hover{
+transform:scale(1.1);
+box-shadow:0 0 20px rgba(255,255,255,0.7);
+}
+
+/* Background Section */
+#birthdaySection{
+position:fixed;
+width:100%;
+height:100%;
+background:url('https://images.unsplash.com/photo-1519681393784-d120267933ba') no-repeat center center/cover;
+
+display:flex;
+justify-content:center;
+align-items:center;
+opacity:0;
+visibility:hidden;
+transition:1s ease;
+}
+
+#birthdaySection::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+}
+
+/* Card */
+.card{
+position:relative;
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(14px);
+padding:clamp(20px,5vw,50px);
+border-radius:20px;
+text-align:center;
+color:white;
+box-shadow:0 0 30px rgba(255,215,0,0.15);
+
+width:92%;
+max-width:700px;
+max-height:80vh;
+
+overflow-y:auto;
+z-index:2;
+}
+
+/* Scroll styling */
+.card::-webkit-scrollbar{
+width:6px;
+}
+.card::-webkit-scrollbar-thumb{
+background:white;
+border-radius:10px;
+}
+
+/* Heading */
+.card h1{
+font-family:'Great Vibes',cursive;
+font-size:clamp(28px,7vw,65px);
+margin-bottom:clamp(15px,3vw,25px);
+animation:glow 2s infinite alternate;
+line-height:1.2;
+}
+@media (max-width:768px){
+.card h1{
+font-size:32px;
+}
+}
+
+
+/* Message */
+.card p{
+font-size:18px;   /* Normal desktop size */
+line-height:1.9;
+letter-spacing:0.3px;
+text-align:left;
+white-space:pre-line;
+}
+@media (max-width:768px){
+.card p{
+font-size:14px;   /* Smaller for mobile */
+line-height:1.7;
+}
+}
+
+.card{
+scroll-behavior:smooth;
+}
+
+.card::-webkit-scrollbar{
+width:4px;
+}
+
+.card::-webkit-scrollbar-thumb{
+background:gold;
+border-radius:10px;
+}
+
+/* Animations */
+@keyframes popUp{
+from{transform:scale(0.5);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+@keyframes glow{
+from{text-shadow:0 0 10px #fff;}
+to{text-shadow:0 0 30px #ff9f60,0 0 50px #ffac5e;}
+}
+
+#openBtn{
+padding:12px 28px;
+font-size:clamp(16px,4vw,20px);
+border-radius:40px;
+}
+
+
+</style>
+</head>
+
+<body>
+
+    <canvas id="particles"></canvas>
+
+<button id="openBtn">Click for Surprise 🎁</button>
+
+<div id="birthdaySection">
+<div class="card">
+<h1 id="typingText"></h1>
+<p id="messageText"></p>
+</div>
+</div>
+
+<script>
+
+const btn=document.getElementById("openBtn");
+const section=document.getElementById("birthdaySection");
+const title=document.getElementById("typingText");
+const message=document.getElementById("messageText");
+
+const heading="Happiest Birthday, Didi. 🫶❤️";
+
+const fullMessage=`Today I just want to thank God for bringing you into my life. We may not be connected by blood, but what we share is something much stronger and more meaningful. You came into my life not as a relative, but as a blessing — and slowly, you became family in the most natural way.
+
+You have cared for me, guided me, scolded me when I was wrong, and stood by me in ways that words can’t fully describe. The bond we share was not forced, not given by birth — it was built with understanding, trust, and genuine affection. And that makes it even more special.
+
+Sometimes I think about how lucky I am to have a sister like you. Not everyone gets a relationship that feels so real without sharing the same blood. You have shown me that family is not just about DNA — it’s about who chooses to stay, who chooses to care, and who chooses to love unconditionally.
+
+You have always treated me like your own, and I promise I will always respect and cherish this bond the same way. No matter where life takes us, you will always have a younger brother who values you deeply and prays for your happiness every single day.
+
+On your special day, I pray that your life is filled with peace, success, laughter, and all the beautiful things your heart desires. May you always feel appreciated, respected, and loved — not just today, but every day of your life.
+
+Thank you for being my sister by heart.
+Thank you for choosing this bond.
+
+Happy Birthday once again, Didi. ❤️
+
+— Always your little brother,
+Kunal 💫`;
+
+let i=0;
+let j=0;
+
+btn.onclick=function(){
+section.style.opacity="1";
+section.style.visibility="visible";
+btn.style.display="none";
+typeHeading();
+};
+
+function typeHeading(){
+if(i<heading.length){
+title.innerHTML+=heading.charAt(i);
+i++;
+setTimeout(typeHeading,80);
+}else{
+setTimeout(typeMessage,500);
+}
+}
+
+function typeMessage(){
+if(j<fullMessage.length){
+message.innerHTML+=fullMessage.charAt(j);
+j++;
+setTimeout(typeMessage,20);
+}
+}
+
+
+/* Create Golden Particles */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particlesArray = [];
+
+class Particle {
+    constructor(){
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedY = Math.random() * 0.5 + 0.2;
+        this.opacity = Math.random();
+    }
+
+    update(){
+        this.y -= this.speedY;
+        if(this.y < 0){
+            this.y = canvas.height;
+            this.x = Math.random() * canvas.width;
+        }
+    }
+
+    draw(){
+        ctx.fillStyle = "rgba(255, 215, 0," + this.opacity + ")";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function init(){
+    for(let i=0;i<120;i++){
+        particlesArray.push(new Particle());
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particlesArray.forEach(particle=>{
+        particle.update();
+        particle.draw();
+    });
+    requestAnimationFrame(animate);
+}
+
+init();
+animate();
+
+/* Resize Fix */
+window.addEventListener("resize", function(){
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+});
+
+
+
+
+</script>
+
+</body>
+</html>
